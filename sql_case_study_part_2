@@ -1,0 +1,569 @@
+import sqlite3
+from sqlite3 import Error
+
+ 
+def create_connection(db_file):
+    """ create a database connection to the SQLite database
+        specified by the db_file
+    :param db_file: database file
+    :return: Connection object or None
+    """
+    conn = None
+    try:
+        conn = sqlite3.connect(db_file)
+        print(sqlite3.version)
+    except Error as e:
+        print(e)
+ 
+    return conn
+
+ 
+def select_all_tasks(conn):
+    """
+    Query all rows in the tasks table
+    :param conn: the Connection object
+    :return:
+    """
+    cur = conn.cursor()
+    
+    query1 = """
+        SELECT *
+        FROM FACILITIES
+        """
+    cur.execute(query1)
+ 
+    rows = cur.fetchall()
+ 
+    for row in rows:
+        print(row)
+
+
+def main():
+    database = "sqlite_db_pythonsqlite.db"
+ 
+    # create a database connection
+    conn = create_connection(database)
+    with conn: 
+        print("2. Query all tasks")
+        select_all_tasks(conn)
+ 
+ 
+if __name__ == '__main__':
+    main()
+
+2.6.0
+2. Query all tasks
+(0, 'Tennis Court 1', 5, 25, 10000, 200)
+(1, 'Tennis Court 2', 5, 25, 8000, 200)
+(2, 'Badminton Court', 0, 15.5, 4000, 50)
+(3, 'Table Tennis', 0, 5, 320, 10)
+(4, 'Massage Room 1', 9.9, 80, 4000, 3000)
+(5, 'Massage Room 2', 9.9, 80, 4000, 3000)
+(6, 'Squash Court', 3.5, 17.5, 5000, 80)
+(7, 'Snooker Table', 0, 5, 450, 15)
+(8, 'Pool Table', 0, 5, 400, 15)
+
+import sqlite3
+from sqlite3 import Error
+
+ 
+def create_connection(db_file):
+    """ create a database connection to the SQLite database
+        specified by the db_file
+    :param db_file: database file
+    :return: Connection object or None
+    """
+    conn = None
+    try:
+        conn = sqlite3.connect(db_file)
+        print(sqlite3.version)
+    except Error as e:
+        print(e)
+ 
+    return conn
+
+ 
+def select_all_tasks(conn):
+    """
+    Query all rows in the tasks table
+    :param conn: the Connection object
+    :return:
+    """
+    cur = conn.cursor()
+    
+    query1 = """
+        SELECT f.name, sum(CASE WHEN b.memid=0 THEN f.guestcost
+        ELSE f.membercost END) AS cost_per_slot, sum(CASE WHEN b.memid=0 THEN f.guestcost*b.slots 
+        ELSE f.membercost*b.slots END) AS total_cost_all_slots
+        from Members as m 
+        INNER JOIN Bookings as b 
+        ON m.memid = b.memid
+        INNER JOIN Facilities as f
+        ON b.facid=f.facid
+        GROUP BY f.name
+        HAVING total_cost_all_slots < 1000
+        ORDER BY total_cost_all_slots
+        """
+    cur.execute(query1)
+ 
+    rows = cur.fetchall()
+ 
+    for row in rows:
+        print(row)
+
+
+def main():
+    database = "sqlite_db_pythonsqlite.db"
+ 
+    # create a database connection
+    conn = create_connection(database)
+    with conn: 
+        print("2. Query all tasks")
+        select_all_tasks(conn)
+ 
+ 
+if __name__ == '__main__':
+    main()
+
+2.6.0
+2. Query all tasks
+('Table Tennis', 90, 180)
+('Snooker Table', 115, 240)
+('Pool Table', 265, 270)
+
+import sqlite3
+from sqlite3 import Error
+
+ 
+def create_connection(db_file):
+    """ create a database connection to the SQLite database
+        specified by the db_file
+    :param db_file: database file
+    :return: Connection object or None
+    """
+    conn = None
+    try:
+        conn = sqlite3.connect(db_file)
+        print(sqlite3.version)
+    except Error as e:
+        print(e)
+ 
+    return conn
+
+ 
+def select_all_tasks(conn):
+    """
+    Query all rows in the tasks table
+    :param conn: the Connection object
+    :return:
+    """
+    cur = conn.cursor()
+    
+    query1 = """
+        SELECT m.surname as member_surname,m.firstname as member_firstname, r.surname as recommender_surname,r.firstname as recommender_firstname
+        FROM Members as m
+        INNER JOIN Members as r
+        ON r.memid=m.recommendedby
+        ORDER BY m.surname,m.firstname
+        """
+    cur.execute(query1)
+ 
+    rows = cur.fetchall()
+ 
+    for row in rows:
+        print(row)
+
+
+def main():
+    database = "sqlite_db_pythonsqlite.db"
+ 
+    # create a database connection
+    conn = create_connection(database)
+    with conn: 
+        print("2. Query all tasks")
+        select_all_tasks(conn)
+ 
+ 
+if __name__ == '__main__':
+    main()
+
+2.6.0
+2. Query all tasks
+('Bader', 'Florence', 'Stibbons', 'Ponder')
+('Baker', 'Anne', 'Stibbons', 'Ponder')
+('Baker', 'Timothy', 'Farrell', 'Jemima')
+('Boothe', 'Tim', 'Rownam', 'Tim')
+('Butters', 'Gerald', 'Smith', 'Darren')
+('Coplin', 'Joan', 'Baker', 'Timothy')
+('Crumpet', 'Erica', 'Smith', 'Tracy')
+('Dare', 'Nancy', 'Joplette', 'Janice')
+('Genting', 'Matthew', 'Butters', 'Gerald')
+('Hunt', 'John', 'Purview', 'Millicent')
+('Jones', 'David', 'Joplette', 'Janice')
+('Jones', 'Douglas', 'Jones', 'David')
+('Joplette', 'Janice', 'Smith', 'Darren')
+('Mackenzie', 'Anna', 'Smith', 'Darren')
+('Owen', 'Charles', 'Smith', 'Darren')
+('Pinker', 'David', 'Farrell', 'Jemima')
+('Purview', 'Millicent', 'Smith', 'Tracy')
+('Rumney', 'Henrietta', 'Genting', 'Matthew')
+('Sarwin', 'Ramnaresh', 'Bader', 'Florence')
+('Smith', 'Jack', 'Smith', 'Darren')
+('Stibbons', 'Ponder', 'Tracy', 'Burton')
+('Worthington-Smyth', 'Henry', 'Smith', 'Tracy')
+
+import sqlite3
+from sqlite3 import Error
+
+ 
+def create_connection(db_file):
+    """ create a database connection to the SQLite database
+        specified by the db_file
+    :param db_file: database file
+    :return: Connection object or None
+    """
+    conn = None
+    try:
+        conn = sqlite3.connect(db_file)
+        print(sqlite3.version)
+    except Error as e:
+        print(e)
+ 
+    return conn
+
+ 
+def select_all_tasks(conn):
+    """
+    Query all rows in the tasks table
+    :param conn: the Connection object
+    :return:
+    """
+    cur = conn.cursor()
+    
+    query1 = """        
+        SELECT f.name, m.surname,m.firstname,count(b.bookid) as bookings_count,sum(b.slots) as slots_usage
+        from Members as m 
+        INNER JOIN Bookings as b 
+        ON m.memid = b.memid
+        INNER JOIN Facilities as f
+        ON b.facid=f.facid
+        WHERE b.memid!=0                                 
+        GROUP BY f.name, m.surname,m.firstname
+        ORDER BY slots_usage desc
+        """
+    cur.execute(query1)
+ 
+    rows = cur.fetchall()
+ 
+    for row in rows:
+        print(row)
+
+
+def main():
+    database = "sqlite_db_pythonsqlite.db"
+ 
+    # create a database connection
+    conn = create_connection(database)
+    with conn: 
+        print("2. Query all tasks")
+        select_all_tasks(conn)
+ 
+ 
+if __name__ == '__main__':
+    main()
+
+2.6.0
+2. Query all tasks
+('Badminton Court', 'Smith', 'Darren', 132, 432)
+('Pool Table', 'Rownam', 'Tim', 241, 282)
+('Massage Room 1', 'Rownam', 'Tim', 80, 176)
+('Tennis Court 1', 'Butters', 'Gerald', 57, 171)
+('Tennis Court 2', 'Boothe', 'Tim', 52, 168)
+('Table Tennis', 'Rownam', 'Tim', 69, 150)
+('Snooker Table', 'Joplette', 'Janice', 68, 142)
+('Tennis Court 2', 'Owen', 'Charles', 41, 141)
+('Tennis Court 2', 'Baker', 'Anne', 35, 114)
+('Squash Court', 'Baker', 'Anne', 49, 110)
+('Badminton Court', 'Smith', 'Tracy', 32, 102)
+('Tennis Court 2', 'Jones', 'David', 30, 99)
+('Badminton Court', 'Mackenzie', 'Anna', 30, 96)
+('Tennis Court 2', 'Stibbons', 'Ponder', 31, 96)
+('Pool Table', 'Baker', 'Timothy', 85, 95)
+('Tennis Court 1', 'Smith', 'Tracy', 30, 93)
+('Tennis Court 1', 'Tracy', 'Burton', 31, 93)
+('Snooker Table', 'Boothe', 'Tim', 43, 90)
+('Snooker Table', 'Smith', 'Tracy', 45, 90)
+('Table Tennis', 'Bader', 'Florence', 42, 86)
+('Tennis Court 1', 'Jones', 'David', 25, 84)
+('Pool Table', 'Mackenzie', 'Anna', 70, 83)
+('Tennis Court 1', 'Dare', 'Nancy', 25, 81)
+('Squash Court', 'Tracy', 'Burton', 35, 78)
+('Massage Room 1', 'Boothe', 'Tim', 36, 76)
+('Tennis Court 1', 'Smith', 'Jack', 22, 75)
+('Snooker Table', 'Butters', 'Gerald', 34, 72)
+('Massage Room 1', 'Farrell', 'Jemima', 29, 68)
+('Massage Room 1', 'Butters', 'Gerald', 32, 66)
+('Snooker Table', 'Bader', 'Florence', 33, 66)
+('Pool Table', 'Smith', 'Tracy', 61, 64)
+('Badminton Court', 'Butters', 'Gerald', 20, 63)
+('Massage Room 1', 'Tracy', 'Burton', 31, 62)
+('Massage Room 1', 'Smith', 'Darren', 28, 58)
+('Tennis Court 1', 'Joplette', 'Janice', 19, 57)
+('Tennis Court 2', 'Smith', 'Darren', 19, 57)
+('Table Tennis', 'Smith', 'Darren', 28, 56)
+('Table Tennis', 'Smith', 'Tracy', 28, 56)
+('Massage Room 1', 'Smith', 'Jack', 27, 54)
+('Table Tennis', 'Genting', 'Matthew', 26, 54)
+('Massage Room 1', 'Genting', 'Matthew', 25, 52)
+('Tennis Court 1', 'Owen', 'Charles', 17, 51)
+('Tennis Court 1', 'Pinker', 'David', 16, 51)
+('Massage Room 1', 'Baker', 'Timothy', 24, 50)
+('Table Tennis', 'Owen', 'Charles', 24, 50)
+('Badminton Court', 'Stibbons', 'Ponder', 16, 48)
+('Table Tennis', 'Baker', 'Timothy', 24, 48)
+('Table Tennis', 'Tracy', 'Burton', 24, 48)
+('Snooker Table', 'Dare', 'Nancy', 23, 46)
+('Table Tennis', 'Coplin', 'Joan', 21, 46)
+('Tennis Court 1', 'Baker', 'Timothy', 14, 45)
+('Snooker Table', 'Farrell', 'Jemima', 21, 44)
+('Snooker Table', 'Owen', 'Charles', 22, 44)
+('Massage Room 1', 'Jones', 'David', 19, 40)
+('Massage Room 1', 'Stibbons', 'Ponder', 19, 40)
+('Snooker Table', 'Stibbons', 'Ponder', 20, 40)
+('Snooker Table', 'Tracy', 'Burton', 20, 40)
+('Massage Room 1', 'Dare', 'Nancy', 19, 38)
+('Pool Table', 'Worthington-Smyth', 'Henry', 33, 37)
+('Badminton Court', 'Boothe', 'Tim', 12, 36)
+('Badminton Court', 'Smith', 'Jack', 12, 36)
+('Snooker Table', 'Sarwin', 'Ramnaresh', 18, 36)
+('Tennis Court 2', 'Sarwin', 'Ramnaresh', 11, 36)
+('Table Tennis', 'Pinker', 'David', 17, 34)
+('Tennis Court 2', 'Dare', 'Nancy', 11, 33)
+('Snooker Table', 'Pinker', 'David', 16, 32)
+('Table Tennis', 'Mackenzie', 'Anna', 16, 32)
+('Badminton Court', 'Baker', 'Anne', 10, 30)
+('Badminton Court', 'Dare', 'Nancy', 10, 30)
+('Pool Table', 'Tracy', 'Burton', 30, 30)
+('Squash Court', 'Joplette', 'Janice', 14, 30)
+('Squash Court', 'Smith', 'Darren', 14, 30)
+('Pool Table', 'Smith', 'Darren', 28, 28)
+('Snooker Table', 'Rumney', 'Henrietta', 14, 28)
+('Badminton Court', 'Bader', 'Florence', 9, 27)
+('Pool Table', 'Joplette', 'Janice', 27, 27)
+('Tennis Court 1', 'Jones', 'Douglas', 9, 27)
+('Pool Table', 'Boothe', 'Tim', 25, 26)
+('Pool Table', 'Farrell', 'David', 25, 25)
+('Badminton Court', 'Jones', 'David', 8, 24)
+('Massage Room 1', 'Joplette', 'Janice', 12, 24)
+('Snooker Table', 'Smith', 'Darren', 12, 24)
+('Squash Court', 'Boothe', 'Tim', 12, 24)
+('Table Tennis', 'Farrell', 'Jemima', 12, 24)
+('Tennis Court 2', 'Bader', 'Florence', 8, 24)
+('Tennis Court 2', 'Joplette', 'Janice', 8, 24)
+('Pool Table', 'Bader', 'Florence', 23, 23)
+('Massage Room 1', 'Owen', 'Charles', 11, 22)
+('Squash Court', 'Smith', 'Jack', 9, 22)
+('Table Tennis', 'Jones', 'David', 11, 22)
+('Badminton Court', 'Baker', 'Timothy', 7, 21)
+('Badminton Court', 'Farrell', 'Jemima', 7, 21)
+('Badminton Court', 'Pinker', 'David', 7, 21)
+('Badminton Court', 'Sarwin', 'Ramnaresh', 7, 21)
+('Tennis Court 1', 'Coplin', 'Joan', 7, 21)
+('Tennis Court 2', 'Baker', 'Timothy', 7, 21)
+('Snooker Table', 'Coplin', 'Joan', 10, 20)
+('Pool Table', 'Dare', 'Nancy', 19, 19)
+('Badminton Court', 'Owen', 'Charles', 6, 18)
+('Pool Table', 'Genting', 'Matthew', 18, 18)
+('Squash Court', 'Butters', 'Gerald', 9, 18)
+('Table Tennis', 'Joplette', 'Janice', 9, 18)
+('Tennis Court 1', 'Baker', 'Anne', 6, 18)
+('Tennis Court 1', 'Farrell', 'David', 6, 18)
+('Tennis Court 1', 'Rownam', 'Tim', 6, 18)
+('Tennis Court 2', 'Rownam', 'Tim', 6, 18)
+('Massage Room 1', 'Sarwin', 'Ramnaresh', 8, 16)
+('Squash Court', 'Farrell', 'Jemima', 8, 16)
+('Squash Court', 'Jones', 'David', 8, 16)
+('Badminton Court', 'Worthington-Smyth', 'Henry', 4, 15)
+('Tennis Court 1', 'Sarwin', 'Ramnaresh', 5, 15)
+('Snooker Table', 'Mackenzie', 'Anna', 7, 14)
+('Squash Court', 'Owen', 'Charles', 7, 14)
+('Table Tennis', 'Purview', 'Millicent', 6, 14)
+('Pool Table', 'Sarwin', 'Ramnaresh', 13, 13)
+('Badminton Court', 'Rownam', 'Tim', 4, 12)
+('Massage Room 1', 'Smith', 'Tracy', 6, 12)
+('Pool Table', 'Baker', 'Anne', 12, 12)
+('Pool Table', 'Stibbons', 'Ponder', 12, 12)
+('Snooker Table', 'Tupperware', 'Hyacinth', 5, 12)
+('Squash Court', 'Smith', 'Tracy', 6, 12)
+('Tennis Court 1', 'Boothe', 'Tim', 4, 12)
+('Tennis Court 1', 'Hunt', 'John', 4, 12)
+('Tennis Court 2', 'Hunt', 'John', 4, 12)
+('Pool Table', 'Coplin', 'Joan', 11, 11)
+('Massage Room 2', 'Dare', 'Nancy', 5, 10)
+('Snooker Table', 'Smith', 'Jack', 5, 10)
+('Squash Court', 'Baker', 'Timothy', 5, 10)
+('Table Tennis', 'Dare', 'Nancy', 5, 10)
+('Table Tennis', 'Smith', 'Jack', 5, 10)
+('Pool Table', 'Pinker', 'David', 9, 9)
+('Pool Table', 'Tupperware', 'Hyacinth', 8, 9)
+('Tennis Court 2', 'Butters', 'Gerald', 3, 9)
+('Tennis Court 2', 'Tracy', 'Burton', 3, 9)
+('Massage Room 2', 'Jones', 'David', 4, 8)
+('Pool Table', 'Jones', 'David', 8, 8)
+('Table Tennis', 'Boothe', 'Tim', 4, 8)
+('Pool Table', 'Smith', 'Jack', 7, 7)
+('Badminton Court', 'Crumpet', 'Erica', 2, 6)
+('Badminton Court', 'Hunt', 'John', 2, 6)
+('Badminton Court', 'Jones', 'Douglas', 2, 6)
+('Badminton Court', 'Purview', 'Millicent', 2, 6)
+('Badminton Court', 'Tracy', 'Burton', 2, 6)
+('Massage Room 1', 'Baker', 'Anne', 3, 6)
+('Massage Room 1', 'Hunt', 'John', 3, 6)
+('Massage Room 1', 'Pinker', 'David', 3, 6)
+('Massage Room 2', 'Sarwin', 'Ramnaresh', 3, 6)
+('Pool Table', 'Butters', 'Gerald', 6, 6)
+('Squash Court', 'Pinker', 'David', 3, 6)
+('Table Tennis', 'Sarwin', 'Ramnaresh', 3, 6)
+('Table Tennis', 'Stibbons', 'Ponder', 3, 6)
+('Table Tennis', 'Worthington-Smyth', 'Henry', 3, 6)
+('Tennis Court 2', 'Smith', 'Tracy', 2, 6)
+('Pool Table', 'Purview', 'Millicent', 5, 5)
+('Massage Room 1', 'Crumpet', 'Erica', 2, 4)
+('Massage Room 2', 'Bader', 'Florence', 2, 4)
+('Massage Room 2', 'Baker', 'Anne', 2, 4)
+('Massage Room 2', 'Coplin', 'Joan', 2, 4)
+('Massage Room 2', 'Joplette', 'Janice', 2, 4)
+('Massage Room 2', 'Owen', 'Charles', 2, 4)
+('Massage Room 2', 'Rownam', 'Tim', 2, 4)
+('Snooker Table', 'Jones', 'David', 2, 4)
+('Squash Court', 'Bader', 'Florence', 2, 4)
+('Squash Court', 'Mackenzie', 'Anna', 2, 4)
+('Squash Court', 'Rumney', 'Henrietta', 2, 4)
+('Squash Court', 'Sarwin', 'Ramnaresh', 2, 4)
+('Squash Court', 'Stibbons', 'Ponder', 2, 4)
+('Table Tennis', 'Crumpet', 'Erica', 2, 4)
+('Badminton Court', 'Tupperware', 'Hyacinth', 1, 3)
+('Pool Table', 'Rumney', 'Henrietta', 3, 3)
+('Tennis Court 1', 'Bader', 'Florence', 1, 3)
+('Tennis Court 1', 'Crumpet', 'Erica', 1, 3)
+('Tennis Court 1', 'Farrell', 'Jemima', 1, 3)
+('Tennis Court 1', 'Genting', 'Matthew', 1, 3)
+('Tennis Court 1', 'Stibbons', 'Ponder', 1, 3)
+('Tennis Court 2', 'Farrell', 'David', 1, 3)
+('Tennis Court 2', 'Farrell', 'Jemima', 1, 3)
+('Tennis Court 2', 'Purview', 'Millicent', 1, 3)
+('Tennis Court 2', 'Rumney', 'Henrietta', 1, 3)
+('Tennis Court 2', 'Smith', 'Jack', 1, 3)
+('Massage Room 1', 'Coplin', 'Joan', 1, 2)
+('Massage Room 1', 'Mackenzie', 'Anna', 1, 2)
+('Massage Room 1', 'Tupperware', 'Hyacinth', 1, 2)
+('Massage Room 1', 'Worthington-Smyth', 'Henry', 1, 2)
+('Massage Room 2', 'Butters', 'Gerald', 1, 2)
+('Massage Room 2', 'Genting', 'Matthew', 1, 2)
+('Massage Room 2', 'Smith', 'Jack', 1, 2)
+('Pool Table', 'Jones', 'Douglas', 2, 2)
+('Snooker Table', 'Farrell', 'David', 1, 2)
+('Snooker Table', 'Genting', 'Matthew', 1, 2)
+('Snooker Table', 'Purview', 'Millicent', 1, 2)
+('Squash Court', 'Coplin', 'Joan', 1, 2)
+('Squash Court', 'Farrell', 'David', 1, 2)
+('Squash Court', 'Hunt', 'John', 1, 2)
+('Squash Court', 'Jones', 'Douglas', 1, 2)
+('Squash Court', 'Purview', 'Millicent', 1, 2)
+('Squash Court', 'Tupperware', 'Hyacinth', 1, 2)
+('Table Tennis', 'Baker', 'Anne', 1, 2)
+('Table Tennis', 'Butters', 'Gerald', 1, 2)
+('Table Tennis', 'Hunt', 'John', 1, 2)
+('Pool Table', 'Farrell', 'Jemima', 1, 1)
+('Pool Table', 'Owen', 'Charles', 1, 1)
+
+import sqlite3
+from sqlite3 import Error
+
+ 
+def create_connection(db_file):
+    """ create a database connection to the SQLite database
+        specified by the db_file
+    :param db_file: database file
+    :return: Connection object or None
+    """
+    conn = None
+    try:
+        conn = sqlite3.connect(db_file)
+        print(sqlite3.version)
+    except Error as e:
+        print(e)
+ 
+    return conn
+
+ 
+def select_all_tasks(conn):
+    """
+    Query all rows in the tasks table
+    :param conn: the Connection object
+    :return:
+    """
+    cur = conn.cursor()
+    
+    query1 = """        
+        SELECT STRFTIME('%m-%Y', b.starttime) as booking_month_year,f.name,count(b.bookid) as bookings_count,sum(b.slots) as slots_usage
+        from Members as m 
+        INNER JOIN Bookings as b 
+        ON m.memid = b.memid
+        INNER JOIN Facilities as f
+        ON b.facid=f.facid
+        WHERE b.memid!=0                                 
+        GROUP BY STRFTIME('%m-%Y', b.starttime),f.name
+        ORDER BY booking_month_year
+        """
+    cur.execute(query1)
+ 
+    rows = cur.fetchall()
+ 
+    for row in rows:
+        print(row)
+
+
+def main():
+    database = "sqlite_db_pythonsqlite.db"
+ 
+    # create a database connection
+    conn = create_connection(database)
+    with conn: 
+        print("2. Query all tasks")
+        select_all_tasks(conn)
+ 
+ 
+if __name__ == '__main__':
+    main()
+
+2.6.0
+2. Query all tasks
+('07-2012', 'Badminton Court', 51, 165)
+('07-2012', 'Massage Room 1', 77, 166)
+('07-2012', 'Massage Room 2', 4, 8)
+('07-2012', 'Pool Table', 103, 110)
+('07-2012', 'Snooker Table', 68, 140)
+('07-2012', 'Squash Court', 23, 50)
+('07-2012', 'Table Tennis', 48, 98)
+('07-2012', 'Tennis Court 1', 65, 201)
+('07-2012', 'Tennis Court 2', 41, 123)
+('08-2012', 'Badminton Court', 132, 414)
+('08-2012', 'Massage Room 1', 153, 316)
+('08-2012', 'Massage Room 2', 9, 18)
+('08-2012', 'Pool Table', 272, 303)
+('08-2012', 'Snooker Table', 154, 316)
+('08-2012', 'Squash Court', 85, 184)
+('08-2012', 'Table Tennis', 143, 296)
+('08-2012', 'Tennis Court 1', 111, 339)
+('08-2012', 'Tennis Court 2', 109, 345)
+('09-2012', 'Badminton Court', 161, 507)
+('09-2012', 'Massage Room 1', 191, 402)
+('09-2012', 'Massage Room 2', 14, 28)
+('09-2012', 'Pool Table', 408, 443)
+('09-2012', 'Snooker Table', 199, 404)
+('09-2012', 'Squash Court', 87, 184)
+('09-2012', 'Table Tennis', 194, 400)
+('09-2012', 'Tennis Court 1', 132, 417)
+('09-2012', 'Tennis Court 2', 126, 414)
+
